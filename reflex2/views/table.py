@@ -1,7 +1,40 @@
 import reflex as rx
-from ..backend.backend2 import State, Registros
+from ..backend.backend2 import State, Registros, AlertDialogState
 from ..components.form_field import form_field
 from ..components.status_badges import status_badge
+
+
+def alta_dialog(patient: Registros):
+    """Dialog box para confirmar el alta de un paciente."""
+    return \
+    rx.alert_dialog.root(
+        rx.alert_dialog.trigger(
+            rx.button(
+                rx.icon("stethoscope"), "Alta"
+            )
+        ),
+        rx.alert_dialog.content(
+            rx.alert_dialog.title("Confirmar Alta"),
+            rx.alert_dialog.description(
+                f"¿Estás seguro que deseas dar de alta al paciente {patient.nombre}?"
+            ),
+            rx.hstack(
+                rx.alert_dialog.cancel(
+                    rx.button(
+                        "Cancelar",
+                        color_scheme="red"
+                    )
+                ),
+                rx.alert_dialog.action(
+                    rx.button(
+                        "Confirmar",
+                        on_click=lambda: State.update_alta(getattr(patient, "id")),
+                        color_scheme="green"
+                    ),
+                ),
+            )
+        ),
+    )
 
 
 def show_patient(patient: Registros):
@@ -17,10 +50,10 @@ def show_patient(patient: Registros):
         rx.table.cell(patient.via),
         rx.table.cell(patient.procedimientos),
         rx.table.cell(patient.observaciones),
-        rx.table.cell(patient.alta),
         rx.table.cell(
             rx.hstack(
                 update_patient_dialog(patient),
+                alta_dialog(patient),# Nuevo campo: Botón para dar de alta al paciente
                 rx.icon_button(
                     rx.icon("trash-2", size=22),
                     on_click=lambda: State.delete_register(getattr(patient, "id")),
@@ -30,6 +63,7 @@ def show_patient(patient: Registros):
                 ),
             )
         ),
+        
         style={"_hover": {"bg": rx.color("gray", 3)}},
         align="center",
     )
@@ -41,7 +75,7 @@ def add_patient_button() -> rx.Component:
         rx.dialog.trigger(
             rx.button(
                 rx.icon("plus", size=26),
-                rx.text("Add Patient", size="4", display=["none", "none", "block"]),
+                rx.text("Añadir paciente", size="4", display=["none", "none", "block"]),
                 size="3",
             ),
         ),
@@ -69,76 +103,69 @@ def add_patient_button() -> rx.Component:
             rx.flex(
                 rx.form.root(
                     rx.flex(
-                        form_field("Name", "Patient Name", "text", "nombre", "user"),
+                        form_field("Name", "Nombre Paciente", "text", "nombre", "paw-print"),
                         form_field(
                             "Motivo de Hospitalización",
-                            "Reason for hospitalization",
+                            "Motivo de Hospitalización",
                             "text",
                             "motivo_hospitalizacion",
                             "clipboard",
                         ),
                         form_field(
-                            "Medico ID",
-                            "ID of the doctor",
+                            "Médico",
+                            "Nombre Médico",
                             "text",
                             "medico_id",
-                            "square",
+                            "user",
                         ),
                         form_field(
-                            "Tecnico ID",
-                            "ID of the technician",
+                            "Técnico",
+                            "Nombre Técnico",
                             "text",
                             "tecnico_id",
-                            "square",
+                            "user",
                         ),
                         form_field(
                             "Exámenes",
-                            "Patient exams",
+                            "Exámenes paciente",
                             "text",
                             "examenes",
-                            "file",
+                            "syringe",
                         ),
                         form_field(
                             "Hora de Examen",
-                            "Exam Time",
+                            "Hora de Examen",
                             "datetime-local",
                             "hora_examen",
                             "clock",
                         ),
                         form_field(
                             "Ayuno",
-                            "Fasting Start Time",
+                            "Hora Inicio Ayuno",
                             "time",
                             "ayuno",
                             "clock",
                         ),
                         form_field(
                             "Vía",
-                            "Placement Date",
+                            "Hora de vía",
                             "datetime-local",
                             "via",
                             "clock",
                         ),
                         form_field(
                             "Procedimientos",
-                            "Procedures",
+                            "Procedimientos",
                             "text",
                             "procedimientos",
                             "clipboard",
                         ),
                         form_field(
                             "Observaciones",
-                            "Observations",
+                            "Observaciones",
                             "text",
                             "observaciones",
-                            "file",
-                        ),
-                        rx.radio(
-                            ["Alta", "Pendiente"],
-                            name="alta",
-                            direction="row",
-                            as_child=True,
-                            required=True,
+                            "clipboard-plus",
                         ),
                         direction="column",
                         spacing="3",
@@ -222,10 +249,10 @@ def update_patient_dialog(patient):
                         # Name
                         form_field(
                             "Name", 
-                            "Patient Name", 
+                            "Nombre Paciente", 
                             "text", 
                             "nombre", 
-                            "user",
+                            "paw-print",
                             patient.nombre
                         ),
                         form_field(
@@ -241,7 +268,7 @@ def update_patient_dialog(patient):
                             "Nombre Médico",
                             "text",
                             "medico_id",
-                            "square",
+                            "user",
                             patient.medico_id
                         ),
                         form_field(
@@ -249,15 +276,15 @@ def update_patient_dialog(patient):
                             "Nombre Técnico",
                             "text",
                             "tecnico_id",
-                            "square",
+                            "user",
                             patient.tecnico_id
                         ),
                         form_field(
                             "Exámenes",
-                            "Patient exams",
+                            "Exámenes paciente",
                             "text",
                             "examenes",
-                            "file",
+                            "syringe",
                             patient.examenes
                         ),
                         form_field(
@@ -297,26 +324,10 @@ def update_patient_dialog(patient):
                             "Observaciones",
                             "text",
                             "observaciones",
-                            "file",
+                            "clipboard-plus",
                             patient.observaciones
                         ),
-                        
-                        # Status
-                        rx.vstack(
-                            rx.hstack(
-                                rx.icon("truck", size=16, stroke_width=1.5),
-                                rx.text("Status"),
-                                align="center",
-                                spacing="2",
-                            ),
-                            rx.radio(
-                                ["Alta", "Pendiente"],
-                                name="alta",
-                                direction="row",
-                                as_child=True,
-                                required=True,
-                            ),
-                        ),
+                    
                         direction="column",
                         spacing="3",
                     ),
@@ -330,11 +341,12 @@ def update_patient_dialog(patient):
                         ),
                         rx.form.submit(
                             rx.dialog.close(
-                                rx.button("Update Customer"),
+                                rx.button("Actualizar paciente"),
                             ),
                             as_child=True,
                         ),
                         padding_top="2em",
+                        padding_bottom="1em",
                         spacing="3",
                         mt="4",
                         justify="end",
@@ -390,17 +402,16 @@ def main_table():
         rx.table.root(
             rx.table.header(
                 rx.table.row(
-                    _header_cell("Nombre", "user"),
+                    _header_cell("Paciente", "paw-print"),
                     _header_cell("Motivo", "clipboard"),
-                    _header_cell("Medico ID", "square"),
-                    _header_cell("Técnico ID", "square"),
-                    _header_cell("Exámenes", "file"),
+                    _header_cell("Medico", "user"),
+                    _header_cell("Técnico", "user"),
+                    _header_cell("Exámenes", "syringe"),
                     _header_cell("Hora Examen", "clock"),
                     _header_cell("Ayuno", "clock"),
                     _header_cell("Vía", "clock"),
                     _header_cell("Procedimientos", "clipboard"),
-                    _header_cell("Observaciones", "file"),
-                    _header_cell("Alta", "circle-check"),
+                    _header_cell("Observaciones", "clipboard-plus"),
                     _header_cell("Acciones", "cog"),
                 ),
             ),

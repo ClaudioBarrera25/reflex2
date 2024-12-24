@@ -16,7 +16,12 @@ def _get_percentage_change(
     )
     return percentage_change
 
+class AlertDialogState(rx.State):
+    opened: bool = False
 
+    @rx.event
+    def dialog_open(self):
+        self.opened = not self.opened
 
 
 class Registros(rx.Model, table=True):
@@ -58,7 +63,7 @@ class State(rx.State):
     def load_entries(self) -> list[Registros]:
         """Obtiene todos los registros de la base de datos."""
         with rx.session() as session:
-            query = select(Registros)
+            query = select(Registros).where(Registros.alta == False)  # Filtrar pacientes no dados de alta
             if self.search_value:
                 search_value = f"%{self.search_value.lower()}%"
                 query = query.where(
@@ -138,3 +143,14 @@ class State(rx.State):
         return rx.toast.info(f"Registros de {registro.nombre} eliminado.", position="bottom-right")
 
 
+    dialog_patient_id: Optional[int] = None
+
+    def update_alta(self, id: int):
+        with rx.session() as session:
+            registro = session.exec(select(Registros).where(Registros.id == id)).first()
+            if registro:
+                setattr(registro, "alta", True)
+                paciente = getattr(registro, "nombre")
+            session.commit()
+        self.load_entries()
+        return rx.toast.info(f"{paciente} dado de alta.", position="bottom-right")
