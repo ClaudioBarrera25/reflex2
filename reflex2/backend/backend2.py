@@ -74,11 +74,11 @@ class State(rx.State):
                 sort_column = getattr(Registros, self.sort_value)
                 order = desc(sort_column) if self.sort_reverse else asc(sort_column)
                 query = query.order_by(order)
-            self.users = session.exec(query).all()
+            self.patients = session.exec(query).all()
 
 
-        self.get_current_month_values()
-        self.get_previous_month_values()
+        # self.get_current_month_values()
+        # self.get_previous_month_values()
 
     
 
@@ -114,7 +114,9 @@ class State(rx.State):
         with rx.session() as session:
             registro = session.exec(select(Registros).where(Registros.id == self.current_register.id)).first()
             if registro:
+                print(form_data)
                 for field, value in form_data.items():
+                    print(field, value)
                     if hasattr(registro, field) and field != "id":
                         setattr(registro, field, value)
                 session.add(registro)

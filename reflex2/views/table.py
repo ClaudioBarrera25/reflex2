@@ -230,23 +230,23 @@ def update_patient_dialog(patient):
                         ),
                         form_field(
                             "Motivo de Hospitalización",
-                            "Reason for hospitalization",
+                            "Motivo de Hospitalización",
                             "text",
                             "motivo_hospitalizacion",
                             "clipboard",
                             patient.motivo_hospitalizacion
                         ),
                         form_field(
-                            "Medico ID",
-                            "ID of the doctor",
+                            "Médico",
+                            "Nombre Médico",
                             "text",
                             "medico_id",
                             "square",
                             patient.medico_id
                         ),
                         form_field(
-                            "Tecnico ID",
-                            "ID of the technician",
+                            "Técnico",
+                            "Nombre Técnico",
                             "text",
                             "tecnico_id",
                             "square",
@@ -262,7 +262,7 @@ def update_patient_dialog(patient):
                         ),
                         form_field(
                             "Hora de Examen",
-                            "Exam Time",
+                            "Hora de Examen",
                             "datetime-local",
                             "hora_examen",
                             "clock",
@@ -270,7 +270,7 @@ def update_patient_dialog(patient):
                         ),
                         form_field(
                             "Ayuno",
-                            "Fasting Start Time",
+                            "Hora Inicio Ayuno",
                             "time",
                             "ayuno",
                             "clock",
@@ -278,7 +278,7 @@ def update_patient_dialog(patient):
                         ),
                         form_field(
                             "Vía",
-                            "Placement Date",
+                            "Hora de vía",
                             "datetime-local",
                             "via",
                             "clock",
@@ -286,7 +286,7 @@ def update_patient_dialog(patient):
                         ),
                         form_field(
                             "Procedimientos",
-                            "Procedures",
+                            "Procedimientos",
                             "text",
                             "procedimientos",
                             "clipboard",
@@ -294,7 +294,7 @@ def update_patient_dialog(patient):
                         ),
                         form_field(
                             "Observaciones",
-                            "Observations",
+                            "Observaciones",
                             "text",
                             "observaciones",
                             "file",
