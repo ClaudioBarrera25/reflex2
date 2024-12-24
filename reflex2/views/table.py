@@ -1,34 +1,29 @@
 import reflex as rx
-from ..backend.backend import State, Customer
+from ..backend.backend2 import State, Registros
 from ..components.form_field import form_field
 from ..components.status_badges import status_badge
 
 
-def show_customer(user: Customer):
-    """Show a customer in a table row."""
-
+def show_patient(patient: Registros):
+    """Show a patient in a table row."""
     return rx.table.row(
-        rx.table.cell(user.name),
-        rx.table.cell(user.email),
-        rx.table.cell(user.phone),
-        rx.table.cell(user.address),
-        rx.table.cell(f"${user.payments:,}"),
-        rx.table.cell(user.date),
-        rx.table.cell(
-            rx.match(
-                user.status,
-                ("Delivered", status_badge("Delivered")),
-                ("Pending", status_badge("Pending")),
-                ("Cancelled", status_badge("Cancelled")),
-                status_badge("Pending"),
-            )
-        ),
+        rx.table.cell(patient.nombre),
+        rx.table.cell(patient.motivo_hospitalizacion),
+        rx.table.cell(patient.medico_id),
+        rx.table.cell(patient.tecnico_id),
+        rx.table.cell(patient.examenes),
+        rx.table.cell(patient.hora_examen),
+        rx.table.cell(patient.ayuno),
+        rx.table.cell(patient.via),
+        rx.table.cell(patient.procedimientos),
+        rx.table.cell(patient.observaciones),
+        rx.table.cell(patient.alta),
         rx.table.cell(
             rx.hstack(
-                update_customer_dialog(user),
+                update_patient_dialog(patient),
                 rx.icon_button(
                     rx.icon("trash-2", size=22),
-                    on_click=lambda: State.delete_customer(getattr(user, "id")),
+                    on_click=lambda: State.delete_register(getattr(patient, "id")),
                     size="2",
                     variant="solid",
                     color_scheme="red",
@@ -40,32 +35,27 @@ def show_customer(user: Customer):
     )
 
 
-def add_customer_button() -> rx.Component:
+def add_patient_button() -> rx.Component:
+    """Button and form to add a new patient."""
     return rx.dialog.root(
         rx.dialog.trigger(
             rx.button(
                 rx.icon("plus", size=26),
-                rx.text("Add Customer", size="4", display=["none", "none", "block"]),
+                rx.text("Add Patient", size="4", display=["none", "none", "block"]),
                 size="3",
             ),
         ),
         rx.dialog.content(
             rx.hstack(
                 rx.badge(
-                    rx.icon(tag="users", size=34),
+                    rx.icon(tag="user-plus", size=34),
                     color_scheme="grass",
                     radius="full",
                     padding="0.65rem",
                 ),
                 rx.vstack(
-                    rx.dialog.title(
-                        "Add New Customer",
-                        weight="bold",
-                        margin="0",
-                    ),
-                    rx.dialog.description(
-                        "Fill the form with the customer's info",
-                    ),
+                    rx.dialog.title("Add New Patient", weight="bold", margin="0"),
+                    rx.dialog.description("Fill the form with the patient's info"),
                     spacing="1",
                     height="100%",
                     align_items="start",
@@ -79,47 +69,76 @@ def add_customer_button() -> rx.Component:
             rx.flex(
                 rx.form.root(
                     rx.flex(
-                        # Name
+                        form_field("Name", "Patient Name", "text", "nombre", "user"),
                         form_field(
-                            "Name",
-                            "Customer Name",
+                            "Motivo de Hospitalización",
+                            "Reason for hospitalization",
                             "text",
-                            "name",
-                            "user",
+                            "motivo_hospitalizacion",
+                            "clipboard",
                         ),
-                        # Email
                         form_field(
-                            "Email", "user@reflex.dev", "email", "email", "mail"
+                            "Medico ID",
+                            "ID of the doctor",
+                            "text",
+                            "medico_id",
+                            "square",
                         ),
-                        # Phone
-                        form_field("Phone", "Customer Phone", "tel", "phone", "phone"),
-                        # Address
                         form_field(
-                            "Address", "Customer Address", "text", "address", "home"
+                            "Tecnico ID",
+                            "ID of the technician",
+                            "text",
+                            "tecnico_id",
+                            "square",
                         ),
-                        # Payments
                         form_field(
-                            "Payment ($)",
-                            "Customer Payment",
-                            "number",
-                            "payments",
-                            "dollar-sign",
+                            "Exámenes",
+                            "Patient exams",
+                            "text",
+                            "examenes",
+                            "file",
                         ),
-                        # Status
-                        rx.vstack(
-                            rx.hstack(
-                                rx.icon("truck", size=16, stroke_width=1.5),
-                                rx.text("Status"),
-                                align="center",
-                                spacing="2",
-                            ),
-                            rx.radio(
-                                ["Delivered", "Pending", "Cancelled"],
-                                name="status",
-                                direction="row",
-                                as_child=True,
-                                required=True,
-                            ),
+                        form_field(
+                            "Hora de Examen",
+                            "Exam Time",
+                            "datetime-local",
+                            "hora_examen",
+                            "clock",
+                        ),
+                        form_field(
+                            "Ayuno",
+                            "Fasting Start Time",
+                            "time",
+                            "ayuno",
+                            "clock",
+                        ),
+                        form_field(
+                            "Vía",
+                            "Placement Date",
+                            "datetime-local",
+                            "via",
+                            "clock",
+                        ),
+                        form_field(
+                            "Procedimientos",
+                            "Procedures",
+                            "text",
+                            "procedimientos",
+                            "clipboard",
+                        ),
+                        form_field(
+                            "Observaciones",
+                            "Observations",
+                            "text",
+                            "observaciones",
+                            "file",
+                        ),
+                        rx.radio(
+                            ["Alta", "Pendiente"],
+                            name="alta",
+                            direction="row",
+                            as_child=True,
+                            required=True,
                         ),
                         direction="column",
                         spacing="3",
@@ -134,7 +153,7 @@ def add_customer_button() -> rx.Component:
                         ),
                         rx.form.submit(
                             rx.dialog.close(
-                                rx.button("Submit Customer"),
+                                rx.button("Submit Patient"),
                             ),
                             as_child=True,
                         ),
@@ -143,7 +162,7 @@ def add_customer_button() -> rx.Component:
                         mt="4",
                         justify="end",
                     ),
-                    on_submit=State.add_customer_to_db,
+                    on_submit=State.add_register_to_db,
                     reset_on_submit=False,
                 ),
                 width="100%",
@@ -158,7 +177,7 @@ def add_customer_button() -> rx.Component:
     )
 
 
-def update_customer_dialog(user):
+def update_patient_dialog(patient):
     return rx.dialog.root(
         rx.dialog.trigger(
             rx.button(
@@ -167,7 +186,7 @@ def update_customer_dialog(user):
                 color_scheme="blue",
                 size="2",
                 variant="solid",
-                on_click=lambda: State.get_user(user),
+                on_click=lambda: State.get_register(patient),
             ),
         ),
         rx.dialog.content(
@@ -180,12 +199,12 @@ def update_customer_dialog(user):
                 ),
                 rx.vstack(
                     rx.dialog.title(
-                        "Edit Customer",
+                        "Editar paciente",
                         weight="bold",
                         margin="0",
                     ),
                     rx.dialog.description(
-                        "Edit the customer's info",
+                        "Editar información del paciente",
                     ),
                     spacing="1",
                     height="100%",
@@ -202,49 +221,86 @@ def update_customer_dialog(user):
                     rx.flex(
                         # Name
                         form_field(
-                            "Name",
-                            "Customer Name",
-                            "text",
-                            "name",
+                            "Name", 
+                            "Patient Name", 
+                            "text", 
+                            "nombre", 
                             "user",
-                            user.name,
+                            patient.nombre
                         ),
-                        # Email
                         form_field(
-                            "Email",
-                            "user@reflex.dev",
-                            "email",
-                            "email",
-                            "mail",
-                            user.email,
-                        ),
-                        # Phone
-                        form_field(
-                            "Phone",
-                            "Customer Phone",
-                            "tel",
-                            "phone",
-                            "phone",
-                            user.phone,
-                        ),
-                        # Address
-                        form_field(
-                            "Address",
-                            "Customer Address",
+                            "Motivo de Hospitalización",
+                            "Reason for hospitalization",
                             "text",
-                            "address",
-                            "home",
-                            user.address,
+                            "motivo_hospitalizacion",
+                            "clipboard",
+                            patient.motivo_hospitalizacion
                         ),
-                        # Payments
                         form_field(
-                            "Payment ($)",
-                            "Customer Payment",
-                            "number",
-                            "payments",
-                            "dollar-sign",
-                            user.payments.to(str),
+                            "Medico ID",
+                            "ID of the doctor",
+                            "text",
+                            "medico_id",
+                            "square",
+                            patient.medico_id
                         ),
+                        form_field(
+                            "Tecnico ID",
+                            "ID of the technician",
+                            "text",
+                            "tecnico_id",
+                            "square",
+                            patient.tecnico_id
+                        ),
+                        form_field(
+                            "Exámenes",
+                            "Patient exams",
+                            "text",
+                            "examenes",
+                            "file",
+                            patient.examenes
+                        ),
+                        form_field(
+                            "Hora de Examen",
+                            "Exam Time",
+                            "datetime-local",
+                            "hora_examen",
+                            "clock",
+                            patient.hora_examen
+                        ),
+                        form_field(
+                            "Ayuno",
+                            "Fasting Start Time",
+                            "time",
+                            "ayuno",
+                            "clock",
+                            patient.ayuno
+                        ),
+                        form_field(
+                            "Vía",
+                            "Placement Date",
+                            "datetime-local",
+                            "via",
+                            "clock",
+                            patient.via
+                        ),
+                        form_field(
+                            "Procedimientos",
+                            "Procedures",
+                            "text",
+                            "procedimientos",
+                            "clipboard",
+                            patient.procedimientos
+                        ),
+                        form_field(
+                            "Observaciones",
+                            "Observations",
+                            "text",
+                            "observaciones",
+                            "file",
+                            patient.observaciones
+                        ),
+                        
                         # Status
                         rx.vstack(
                             rx.hstack(
@@ -254,9 +310,8 @@ def update_customer_dialog(user):
                                 spacing="2",
                             ),
                             rx.radio(
-                                ["Delivered", "Pending", "Cancelled"],
-                                default_value=user.status,
-                                name="status",
+                                ["Alta", "Pendiente"],
+                                name="alta",
                                 direction="row",
                                 as_child=True,
                                 required=True,
@@ -284,7 +339,7 @@ def update_customer_dialog(user):
                         mt="4",
                         justify="end",
                     ),
-                    on_submit=State.update_customer_to_db,
+                    on_submit=State.update_register_to_db,
                     reset_on_submit=False,
                 ),
                 width="100%",
@@ -311,33 +366,11 @@ def _header_cell(text: str, icon: str):
 
 
 def main_table():
+    """Main table to display patients."""
     return rx.fragment(
         rx.flex(
-            add_customer_button(),
+            add_patient_button(),
             rx.spacer(),
-            rx.cond(
-                State.sort_reverse,
-                rx.icon(
-                    "arrow-down-z-a",
-                    size=28,
-                    stroke_width=1.5,
-                    cursor="pointer",
-                    on_click=State.toggle_sort,
-                ),
-                rx.icon(
-                    "arrow-down-a-z",
-                    size=28,
-                    stroke_width=1.5,
-                    cursor="pointer",
-                    on_click=State.toggle_sort,
-                ),
-            ),
-            rx.select(
-                ["name", "email", "phone", "address", "payments", "date", "status"],
-                placeholder="Sort By: Name",
-                size="3",
-                on_change=lambda sort_value: State.sort_values(sort_value),
-            ),
             rx.input(
                 rx.input.slot(rx.icon("search")),
                 placeholder="Search here...",
@@ -357,17 +390,21 @@ def main_table():
         rx.table.root(
             rx.table.header(
                 rx.table.row(
-                    _header_cell("Name", "user"),
-                    _header_cell("Email", "mail"),
-                    _header_cell("Phone", "phone"),
-                    _header_cell("Address", "home"),
-                    _header_cell("Payments", "dollar-sign"),
-                    _header_cell("Date", "calendar"),
-                    _header_cell("Status", "truck"),
-                    _header_cell("Actions", "cog"),
+                    _header_cell("Nombre", "user"),
+                    _header_cell("Motivo", "clipboard"),
+                    _header_cell("Medico ID", "square"),
+                    _header_cell("Técnico ID", "square"),
+                    _header_cell("Exámenes", "file"),
+                    _header_cell("Hora Examen", "clock"),
+                    _header_cell("Ayuno", "clock"),
+                    _header_cell("Vía", "clock"),
+                    _header_cell("Procedimientos", "clipboard"),
+                    _header_cell("Observaciones", "file"),
+                    _header_cell("Alta", "circle-check"),
+                    _header_cell("Acciones", "cog"),
                 ),
             ),
-            rx.table.body(rx.foreach(State.users, show_customer)),
+            rx.table.body(rx.foreach(State.patients, show_patient)),
             variant="surface",
             size="3",
             width="100%",
