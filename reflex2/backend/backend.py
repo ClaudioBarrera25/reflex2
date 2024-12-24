@@ -167,19 +167,25 @@ class State(rx.State):
         )
 
     def update_customer_to_db(self, form_data: dict):
-        self.current_user.update(form_data)
+        # Actualizar los atributos del objeto Customer con los valores del diccionario
+        for key, value in form_data.items():
+            if hasattr(self.current_user, key):  # Verificar que el atributo exista
+                setattr(self.current_user, key, value)
+
         with rx.session() as session:
             customer = session.exec(
-                select(Customer).where(Customer.id == self.current_user["id"])
+                select(Customer).where(Customer.id == self.current_user.id)
             ).first()
-            for field in Customer.get_fields():
-                if field != "id":
-                    setattr(customer, field, self.current_user[field])
-            session.add(customer)
-            session.commit()
+            if customer:
+                # Actualizar los valores en la base de datos
+                for field in Customer.get_fields():
+                    if field != "id":  # No se actualiza el ID
+                        setattr(customer, field, getattr(self.current_user, field))
+                session.add(customer)
+                session.commit()
         self.load_entries()
         return rx.toast.info(
-            f"User {self.current_user['name']} has been modified.",
+            f"User {self.current_user.name} has been modified.",
             position="bottom-right",
         )
 
