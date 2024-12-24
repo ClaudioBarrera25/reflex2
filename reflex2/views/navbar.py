@@ -6,7 +6,7 @@ def navbar():
         rx.badge(
             rx.icon(tag="table-2", size=28),
             rx.heading("Hospital App", size="6"),
-            color_scheme="green",
+            color_scheme="violet",
             radius="large",
             align="center",
             variant="surface",
@@ -14,7 +14,7 @@ def navbar():
         ),
         rx.spacer(),
         rx.hstack(
-            rx.logo(),
+            # rx.logo(color_scheme="violet"),
             rx.color_mode.button(),
             align="center",
             spacing="3",

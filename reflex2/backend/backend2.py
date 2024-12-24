@@ -55,6 +55,7 @@ class State(rx.State):
     sort_value: str = ""
     sort_reverse: bool = False
     search_value: str = ""
+    show_alta: bool = False
     current_register: Registros = Registros()
     # Values for current and previous month
     current_month_values: MonthValues = MonthValues()
@@ -63,7 +64,10 @@ class State(rx.State):
     def load_entries(self) -> list[Registros]:
         """Obtiene todos los registros de la base de datos."""
         with rx.session() as session:
-            query = select(Registros).where(Registros.alta == False)  # Filtrar pacientes no dados de alta
+            if self.show_alta: # Si se muestra el Alta, entonces seleccionar todo
+                query = select(Registros) # Filtrar pacientes no dados de alta
+            else: # Si no se muestra el Alta, entonces nos quedamos con los que no están de alta
+                query = select(Registros).where(Registros.alta == False)  # Filtrar pacientes no dados de alta
             if self.search_value:
                 search_value = f"%{self.search_value.lower()}%"
                 query = query.where(
@@ -93,6 +97,10 @@ class State(rx.State):
 
     def toggle_sort(self):
         self.sort_reverse = not self.sort_reverse
+        self.load_entries()
+
+    def check_alta(self):
+        self.show_alta = not self.show_alta
         self.load_entries()
 
     def filter_values(self, search_value):

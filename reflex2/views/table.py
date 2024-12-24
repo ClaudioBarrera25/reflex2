@@ -383,6 +383,7 @@ def main_table():
         rx.flex(
             add_patient_button(),
             rx.spacer(),
+            rx.checkbox(text="Mostrar pacientes dados de alta", on_change= State.check_alta(),),
             rx.input(
                 rx.input.slot(rx.icon("search")),
                 placeholder="Search here...",
