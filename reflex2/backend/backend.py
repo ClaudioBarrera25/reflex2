@@ -1,7 +1,7 @@
 import reflex as rx
-from typing import Union
-from sqlmodel import select, asc, desc, or_, func, cast, String
-from datetime import datetime, timedelta
+from typing import Union, Optional
+from sqlmodel import select, asc, desc, or_, func, cast, String, Field
+from datetime import datetime, timedelta, time
 
 
 def _get_percentage_change(
@@ -27,7 +27,6 @@ class Customer(rx.Model, table=True):
     date: str
     payments: float
     status: str
-
 
 class MonthValues(rx.Base):
     """Values for a month."""
