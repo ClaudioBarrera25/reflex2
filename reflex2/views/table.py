@@ -1,6 +1,6 @@
 import reflex as rx
 from ..backend.backend2 import State, Registros, AlertDialogState
-from ..components.form_field import form_field
+from ..components.form_field import form_field, form_field_radio
 from ..components.status_badges import status_badge
 
 
@@ -38,12 +38,33 @@ def alta_dialog(patient: Registros):
 
 
 def show_patient(patient: Registros):
+    estado_color = {
+        "Estable": "green",
+        "Regular": "yellow",
+        "Critico": "red",
+    }
+    print(f"{patient.tecnico_id}")
     """Show a patient in a table row."""
     return rx.table.row(
         rx.table.cell(patient.nombre),
         rx.table.cell(patient.motivo_hospitalizacion),
         rx.table.cell(patient.medico_id),
         rx.table.cell(patient.tecnico_id),
+        rx.table.cell(
+            rx.match(
+                patient.estado_paciente,
+                ("Estable", rx.text("Estable", color="green", font_weight="bold")),
+                ("Regular", rx.text("Regular", color="yellow", font_weight="bold")),
+                ("Critico", rx.text("Critico", color="red", font_weight="bold")),
+                rx.text("Pendiente", color="white", font_weight="bold")
+            )
+        ),
+        rx.table.cell(
+            rx.text(
+                patient.nivel_cuidados,
+                font_weight="bold",
+            )
+        ),
         rx.table.cell(patient.examenes),
         rx.table.cell(patient.hora_examen),
         rx.table.cell(patient.ayuno),
@@ -124,6 +145,22 @@ def add_patient_button() -> rx.Component:
                             "text",
                             "tecnico_id",
                             "user",
+                        ),
+                        form_field_radio(
+                            "Estado",
+                            "Estado Paciente",
+                            "radio",
+                            "via",
+                            "heart",
+                            ["Estable", "Regular", "Critico"]
+                        ),
+                        form_field_radio(
+                            "Prioridad",
+                            "Nivel de cuidados",
+                            "radio",
+                            "via",
+                            "shield",
+                            ["1.0", "1.5", "2.0"]
                         ),
                         form_field(
                             "Exámenes",
@@ -279,6 +316,22 @@ def update_patient_dialog(patient):
                             "user",
                             patient.tecnico_id
                         ),
+                        form_field_radio(
+                            "Estado",
+                            "Estado Paciente",
+                            "radio",
+                            "via",
+                            "heart",
+                            ["Estable", "Regular", "Critico"]
+                        ),
+                        form_field_radio(
+                            "Prioridad",
+                            "Nivel de cuidados",
+                            "radio",
+                            "via",
+                            "shield",
+                            ["1.0", "1.5", "2.0"]
+                        ),
                         form_field(
                             "Exámenes",
                             "Exámenes paciente",
@@ -407,6 +460,8 @@ def main_table():
                     _header_cell("Motivo", "clipboard"),
                     _header_cell("Medico", "user"),
                     _header_cell("Técnico", "user"),
+                    _header_cell("Estado", "heart"),  # Nuevo estado del paciente
+                    _header_cell("Nivel de Cuidados", "shield"),  # Nuevo nivel de cuidados
                     _header_cell("Exámenes", "syringe"),
                     _header_cell("Hora Examen", "clock"),
                     _header_cell("Ayuno", "clock"),

@@ -37,8 +37,9 @@ class Registros(rx.Model, table=True):
     via: Optional[str] = None
     procedimientos: Optional[str] = None
     observaciones: Optional[str] = None 
-    alta: bool
-
+    alta: bool = False
+    estado_paciente: str = "Estable"  # Valores posibles: Estable, Regular, Critico
+    nivel_cuidados: str = "1.0" # Valores posibles: 1.0, 1.5, 2.0
 
 class MonthValues(rx.Base):
     """Values for a month."""
@@ -86,8 +87,6 @@ class State(rx.State):
             self.patients = session.exec(query).all()
 
 
-        # self.get_current_month_values()
-        # self.get_previous_month_values()
 
     
 
