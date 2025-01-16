@@ -24,6 +24,13 @@ class AlertDialogState(rx.State):
         self.opened = not self.opened
 
 
+class RadioGroupNivelState(rx.State):
+    radio_value: str = ""
+
+class RadioGroupEstadoState(rx.State):
+    radio_value: str = ""
+
+
 class Registros(rx.Model, table=True):
     """Modelo para pacientes."""
     id: int = Field(default=None, primary_key=True)
@@ -112,6 +119,7 @@ class State(rx.State):
     def add_register_to_db(self, form_data: dict):
         """Añade un nuevo registro a la base de datos."""
         with rx.session() as session:
+            print(form_data)
             nuevo_registro = Registros(**form_data)
             session.add(nuevo_registro)
             session.commit()
@@ -124,9 +132,9 @@ class State(rx.State):
     def update_register_to_db(self, form_data: dict):
         """Actualiza un registro existente en la base de datos."""
         with rx.session() as session:
+            print(self.current_register.id)
             registro = session.exec(select(Registros).where(Registros.id == self.current_register.id)).first()
             if registro:
-                print(form_data)
                 for field, value in form_data.items():
                     print(field, value)
                     if hasattr(registro, field) and field != "id":

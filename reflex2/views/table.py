@@ -1,7 +1,8 @@
 import reflex as rx
-from ..backend.backend2 import State, Registros, AlertDialogState
+from ..backend.backend2 import State, Registros, AlertDialogState, RadioGroupNivelState, RadioGroupEstadoState
 from ..components.form_field import form_field, form_field_radio
 from ..components.status_badges import status_badge
+
 
 
 def alta_dialog(patient: Registros):
@@ -150,17 +151,21 @@ def add_patient_button() -> rx.Component:
                             "Estado",
                             "Estado Paciente",
                             "radio",
-                            "via",
+                            "estado_paciente",
                             "heart",
-                            ["Estable", "Regular", "Critico"]
+                            ["Estable", "Regular", "Critico"],
+                            "",
+                            RadioGroupEstadoState
                         ),
                         form_field_radio(
                             "Prioridad",
                             "Nivel de cuidados",
                             "radio",
-                            "via",
+                            "nivel_cuidados",
                             "shield",
-                            ["1.0", "1.5", "2.0"]
+                            ["1.0", "1.5", "2.0"],
+                            "",
+                            RadioGroupNivelState
                         ),
                         form_field(
                             "Exámenes",
@@ -320,17 +325,21 @@ def update_patient_dialog(patient):
                             "Estado",
                             "Estado Paciente",
                             "radio",
-                            "via",
+                            "estado_paciente",
                             "heart",
-                            ["Estable", "Regular", "Critico"]
+                            ["Estable", "Regular", "Critico"],
+                            patient.estado_paciente,
+                            RadioGroupEstadoState
                         ),
                         form_field_radio(
                             "Prioridad",
                             "Nivel de cuidados",
                             "radio",
-                            "via",
+                            "nivel_cuidados",
                             "shield",
-                            ["1.0", "1.5", "2.0"]
+                            ["1.0", "1.5", "2.0"],
+                            patient.nivel_cuidados,
+                            RadioGroupNivelState
                         ),
                         form_field(
                             "Exámenes",
