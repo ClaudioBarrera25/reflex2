@@ -23,11 +23,12 @@ DATABASE_URL = f"postgresql+psycopg2://postgres:{PASSWORD}@db.tvwdfnmrkrlyalffpd
 
 
 DATABASE_URL = f"postgresql://postgres.jlrjgnzyltqgotnqkuzd:{PASSWORD}@aws-0-us-west-1.pooler.supabase.com:6543/postgres"
+DATABASE_URL = f"postgresql://postgres.jlrjgnzyltqgotnqkuzd:{PASSWORD}@aws-0-us-west-1.pooler.supabase.com:5432/postgres"
 
 
 
 config = rx.Config(
     app_name="reflex2",
     db_url=DATABASE_URL,
-    api_url="http://reflex-production-eb39.up.railway.app:8000"
+    # api_url="http://reflex-production-eb39.up.railway.app:8000"
 )
