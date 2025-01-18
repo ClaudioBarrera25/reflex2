@@ -22,7 +22,7 @@ DATABASE_URL = f"postgresql+psycopg2://postgres:{PASSWORD}@db.tvwdfnmrkrlyalffpd
 DATABASE_URL = f"postgresql+psycopg2://postgres:Xb0uNqOYm6Ow04ni@db.tvwdfnmrkrlyalffpdiu.supabase.co:5432/postgres?sslmode=require"
 
 # DATABASE_URL = f"postgresql://postgres:{PASSWORD}@db.tvwdfnmrkrlyalffpdiu.supabase.co:6543/postgres"
-DATABASE_URL = f"postgresql://postgres.tvwdfnmrkrlyalffpdiu:{PASSWORD}@aws-0-sa-east-1.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=1"
+DATABASE_URL = f"postgresql://postgres.jlrjgnzyltqgotnqkuzd:{PASSWORD}@aws-0-us-west-1.pooler.supabase.com:6543/postgres"
 
 
 
