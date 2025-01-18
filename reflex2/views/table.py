@@ -37,6 +37,40 @@ def alta_dialog(patient: Registros):
         ),
     )
 
+def borrar_dialog(patient: Registros):
+    """Dialogo para confirmar el borrado de un paciente."""
+    return rx.alert_dialog.root(
+        rx.alert_dialog.trigger(
+            rx.icon_button(
+                rx.icon("trash-2", size=22),
+                size="2",
+                variant="solid",
+                color_scheme="red",
+            )
+        ),
+        rx.alert_dialog.content(
+            rx.alert_dialog.title("Confirmar Borrado"),
+            rx.alert_dialog.description(
+                f"¿Estás seguro que deseas borrar al paciente {patient.nombre}? Esta acción no se puede deshacer."
+            ),
+            rx.hstack(
+                rx.alert_dialog.cancel(
+                    rx.button(
+                        "Cancelar",
+                        color_scheme="gray"
+                    )
+                ),
+                rx.alert_dialog.action(
+                    rx.button(
+                        "Confirmar Borrado",
+                        on_click=lambda: State.delete_register(getattr(patient, "id")),
+                        color_scheme="red"
+                    ),
+                ),
+            )
+        ),
+    )
+
 
 def show_patient(patient: Registros):
     estado_color = {
@@ -76,13 +110,7 @@ def show_patient(patient: Registros):
             rx.hstack(
                 update_patient_dialog(patient),
                 alta_dialog(patient),# Nuevo campo: Botón para dar de alta al paciente
-                rx.icon_button(
-                    rx.icon("trash-2", size=22),
-                    on_click=lambda: State.delete_register(getattr(patient, "id")),
-                    size="2",
-                    variant="solid",
-                    color_scheme="red",
-                ),
+                borrar_dialog(patient)
             )
         ),
         
@@ -110,8 +138,8 @@ def add_patient_button() -> rx.Component:
                     padding="0.65rem",
                 ),
                 rx.vstack(
-                    rx.dialog.title("Add New Patient", weight="bold", margin="0"),
-                    rx.dialog.description("Fill the form with the patient's info"),
+                    rx.dialog.title("Añadir Nuevo Paciente", weight="bold", margin="0"),
+                    rx.dialog.description("Rellenar con información del paciente"),
                     spacing="1",
                     height="100%",
                     align_items="start",
@@ -210,7 +238,7 @@ def add_patient_button() -> rx.Component:
                             "clipboard-plus",
                         ),
                         direction="column",
-                        spacing="3",
+                        spacing="5",
                     ),
                     rx.flex(
                         rx.dialog.close(
@@ -235,7 +263,7 @@ def add_patient_button() -> rx.Component:
                     reset_on_submit=False,
                 ),
                 width="100%",
-                direction="column",
+                direction="row",
                 spacing="4",
             ),
             max_width="450px",
@@ -420,7 +448,8 @@ def update_patient_dialog(patient):
                 direction="column",
                 spacing="4",
             ),
-            max_width="450px",
+            width="100%",
+            max_width=["90%", "600px", "600px"],
             padding="1.5em",
             border=f"2px solid {rx.color('accent', 7)}",
             border_radius="25px",

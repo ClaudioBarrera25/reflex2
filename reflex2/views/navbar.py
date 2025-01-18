@@ -20,7 +20,7 @@ def navbar():
             spacing="3",
         ),
         spacing="2",
-        flex_direction=["column", "column", "row"],
+        flex_direction=["row", "row", "row"],
         align="center",
         width="100%",
         top="0px",

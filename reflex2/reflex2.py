@@ -26,6 +26,6 @@ app = rx.App(
 
 app.add_page(
     index,
-    title="Customer Data App",
-    description="A simple app to manage customer data.",
+    title="Hospital App",
+    description="Aplicación simple para el manejo de hospital.",
 )
