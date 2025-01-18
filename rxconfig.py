@@ -20,7 +20,7 @@ DATABASE_URL = f"postgresql+psycopg2://{USER}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}?
 DATABASE_URL = f"postgresql://postgres:{PASSWORD}@db.tvwdfnmrkrlyalffpdiu.supabase.co:5432/postgres"
 DATABASE_URL = f"postgresql://postgres:{PASSWORD}@db.tvwdfnmrkrlyalffpdiu.supabase.co:6543/postgres"
 DATABASE_URL = f"postgresql://postgres.tvwdfnmrkrlyalffpdiu:{PASSWORD}@aws-0-sa-east-1.pooler.supabase.com:6543/postgres"
-
+##
 
 
 config = rx.Config(
