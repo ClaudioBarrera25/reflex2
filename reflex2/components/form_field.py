@@ -51,10 +51,10 @@ def form_field_radio(
             name=name,
             on_change=lambda value: state_class.set_radio_value,  # Actualizar el estado al cambiar
             color_scheme=rx.cond(
-                state_class.radio_value == options[2], "red",
+                state_class.radio_value == options[2], "tomato",
                 rx.cond(
                     state_class.radio_value == options[1], 
-                    "yellow", 
+                    "amber", 
                     "green")
             ),
         ),

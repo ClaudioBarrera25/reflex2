@@ -73,11 +73,6 @@ def borrar_dialog(patient: Registros):
 
 
 def show_patient(patient: Registros):
-    estado_color = {
-        "Estable": "green",
-        "Regular": "yellow",
-        "Critico": "red",
-    }
     print(f"{patient.tecnico_id}")
     """Show a patient in a table row."""
     return rx.table.row(
@@ -89,8 +84,8 @@ def show_patient(patient: Registros):
             rx.match(
                 patient.estado_paciente,
                 ("Estable", rx.text("Estable", color="green", font_weight="bold")),
-                ("Regular", rx.text("Regular", color="yellow", font_weight="bold")),
-                ("Critico", rx.text("Critico", color="red", font_weight="bold")),
+                ("Regular", rx.text("Regular", color_scheme="amber", font_weight="bold")),
+                ("Critico", rx.text("Critico", color="tomato", font_weight="bold")),
                 rx.text("Pendiente", color="white", font_weight="bold")
             )
         ),
