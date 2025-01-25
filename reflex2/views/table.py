@@ -1,6 +1,6 @@
 import reflex as rx
 from ..backend.backend2 import State, Registros, AlertDialogState, RadioGroupNivelState, RadioGroupEstadoState
-from ..components.form_field import form_field, form_field_radio
+from ..components.form_field import form_field, form_field_radio, form_field_date
 from ..components.status_badges import status_badge
 
 
@@ -11,7 +11,9 @@ def alta_dialog(patient: Registros):
     rx.alert_dialog.root(
         rx.alert_dialog.trigger(
             rx.button(
-                rx.icon("stethoscope"), "Alta"
+                rx.icon("stethoscope"), "Alta",
+                disabled=patient.alta,
+                color_scheme="grass"
             )
         ),
         rx.alert_dialog.content(
@@ -197,7 +199,7 @@ def add_patient_button() -> rx.Component:
                             "examenes",
                             "syringe",
                         ),
-                        form_field(
+                        form_field_date(
                             "Hora de Examen",
                             "Hora de Examen",
                             "datetime-local",
@@ -211,7 +213,7 @@ def add_patient_button() -> rx.Component:
                             "ayuno",
                             "clock",
                         ),
-                        form_field(
+                        form_field_date(
                             "Vía",
                             "Hora de vía",
                             "datetime-local",
@@ -372,7 +374,7 @@ def update_patient_dialog(patient):
                             "syringe",
                             patient.examenes
                         ),
-                        form_field(
+                        form_field_date(
                             "Hora de Examen",
                             "Hora de Examen",
                             "datetime-local",
@@ -380,7 +382,7 @@ def update_patient_dialog(patient):
                             "clock",
                             patient.hora_examen
                         ),
-                        form_field(
+                        form_field_date(
                             "Ayuno",
                             "Hora Inicio Ayuno",
                             "time",
@@ -388,7 +390,7 @@ def update_patient_dialog(patient):
                             "clock",
                             patient.ayuno
                         ),
-                        form_field(
+                        form_field_date(
                             "Vía",
                             "Hora de vía",
                             "datetime-local",
