@@ -1,5 +1,5 @@
 import reflex as rx
-from ..backend.backend2 import State, Registros, AlertDialogState, RadioGroupNivelState, RadioGroupEstadoState
+from ..api.backend2 import State, Registros, AlertDialogState, RadioGroupNivelState, RadioGroupEstadoState
 from ..components.form_field import form_field, form_field_radio, form_field_date
 from ..components.status_badges import status_badge
 
@@ -75,7 +75,6 @@ def borrar_dialog(patient: Registros):
 
 
 def show_patient(patient: Registros):
-    print(f"{patient.tecnico_id}")
     """Show a patient in a table row."""
     return rx.table.row(
         rx.table.cell(patient.nombre),

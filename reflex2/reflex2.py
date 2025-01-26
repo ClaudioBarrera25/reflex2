@@ -4,6 +4,8 @@ from reflex_calendar import calendar
 from .components.stats_cards import stats_cards_group
 from .views.navbar import navbar
 from .views.table import main_table
+from reflex2.components.buttons import button_gatos, button_perros
+from .views.bienvenida import land_bienvenida
 
 
 def index() -> rx.Component:
@@ -18,6 +20,7 @@ def index() -> rx.Component:
         spacing="6",
         padding_x=["1.5em", "1.5em", "3em"],
     )
+
 
 
 def testeo() -> rx.Component:
@@ -37,7 +40,8 @@ def testeo() -> rx.Component:
         rx.box(
             "Hello World",
             class_name="text-4xl text-center text-blue-300",
-        )
+        ),
+        rx.hstack(button_gatos(), button_perros())
     )
 
 
@@ -58,3 +62,7 @@ app.add_page(
 app.add_page(
     testeo,
     route="/testeo")
+
+app.add_page(
+    land_bienvenida,
+    route="/bienvenida")

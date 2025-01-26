@@ -35,6 +35,7 @@ class Registros(rx.Model, table=True):
     """Modelo para pacientes."""
     id: int = Field(default=None, primary_key=True)
     nombre: str
+    especie:str
     motivo_hospitalizacion: str
     medico_id: str 
     tecnico_id: str
@@ -69,6 +70,9 @@ class State(rx.State):
     current_month_values: MonthValues = MonthValues()
     previous_month_values: MonthValues = MonthValues()
 
+
+
+
     def load_entries(self) -> list[Registros]:
         """Obtiene todos los registros de la base de datos."""
         with rx.session() as session:
@@ -76,6 +80,7 @@ class State(rx.State):
                 query = select(Registros) # Filtrar pacientes no dados de alta
             else: # Si no se muestra el Alta, entonces nos quedamos con los que no están de alta
                 query = select(Registros).where(Registros.alta == False)  # Filtrar pacientes no dados de alta
+
             if self.search_value:
                 search_value = f"%{self.search_value.lower()}%"
                 query = query.where(
@@ -91,6 +96,7 @@ class State(rx.State):
                 sort_column = getattr(Registros, self.sort_value)
                 order = desc(sort_column) if self.sort_reverse else asc(sort_column)
                 query = query.order_by(order)
+
             self.patients = session.exec(query).all()
 
 
