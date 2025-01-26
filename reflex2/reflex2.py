@@ -8,12 +8,25 @@ from reflex2.components.buttons import button_gatos, button_perros
 from .views.bienvenida import land_bienvenida
 
 
-def index() -> rx.Component:
+def index_perro() -> rx.Component:
     return rx.vstack(
-        navbar(),
+        navbar("Perro"),
         # stats_cards_group(),
         rx.box(
-            main_table(),
+            main_table("Perro"),
+            width="100%",
+        ),
+        width="100%",
+        spacing="6",
+        padding_x=["1.5em", "1.5em", "3em"],
+    )
+
+def index_gato() -> rx.Component:
+    return rx.vstack(
+        navbar("Gato"),
+        # stats_cards_group(),
+        rx.box(
+            main_table("Gato"),
             width="100%",
         ),
         width="100%",
@@ -54,7 +67,19 @@ app = rx.App(
 )
 
 app.add_page(
-    index,
+    land_bienvenida,
+    route="/")
+
+app.add_page(
+    index_gato,
+    route="/hospital_gato",
+    title="Hospital App",
+    description="Aplicación simple para el manejo de hospital.",
+)
+
+app.add_page(
+    index_perro,
+    route="/hospital_perro",
     title="Hospital App",
     description="Aplicación simple para el manejo de hospital.",
 )
@@ -62,7 +87,3 @@ app.add_page(
 app.add_page(
     testeo,
     route="/testeo")
-
-app.add_page(
-    land_bienvenida,
-    route="/bienvenida")

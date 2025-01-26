@@ -78,6 +78,7 @@ def show_patient(patient: Registros):
     """Show a patient in a table row."""
     return rx.table.row(
         rx.table.cell(patient.nombre),
+        rx.table.cell(patient.especie),
         rx.table.cell(patient.motivo_hospitalizacion),
         rx.table.cell(patient.medico_id),
         rx.table.cell(patient.tecnico_id),
@@ -149,7 +150,21 @@ def add_patient_button() -> rx.Component:
             rx.flex(
                 rx.form.root(
                     rx.flex(
-                        form_field("Name", "Nombre Paciente", "text", "nombre", "paw-print"),
+                        form_field(
+                            "Name",
+                            "Nombre Paciente",
+                            "text",
+                            "nombre",
+                            "paw-print"
+                        ),
+                        form_field_radio(
+                            "Especie",
+                            "Especie Paciente",
+                            "radio",
+                            "especie",
+                            "heart",
+                            ["Perro", "Gato"],
+                        ),
                         form_field(
                             "Motivo de Hospitalización",
                             "Motivo de Hospitalización",
@@ -464,33 +479,48 @@ def _header_cell(text: str, icon: str):
     )
 
 
-def main_table():
-    """Main table to display patients."""
-    return rx.fragment(
-        rx.flex(
-            add_patient_button(),
-            rx.spacer(),
-            rx.checkbox(text="Mostrar pacientes dados de alta", on_change= State.check_alta(),),
-            rx.input(
-                rx.input.slot(rx.icon("search")),
-                placeholder="Search here...",
-                size="3",
-                max_width="225px",
-                width="100%",
-                variant="surface",
-                on_change=lambda value: State.filter_values(value),
-            ),
-            justify="end",
-            align="center",
-            spacing="3",
-            wrap="wrap",
-            width="100%",
-            padding_bottom="1em",
-        ),
-        rx.table.root(
-            rx.table.header(
+
+def show_alta_checkbox():
+    """Checkbox para mostrar pacientes dados de alta."""
+    return rx.checkbox(
+        text="Mostrar pacientes dados de alta",
+        on_change=State.check_alta(),
+    )
+
+
+def search_bar():
+    """Barra de búsqueda de pacientes."""
+    return rx.input(
+        rx.input.slot(rx.icon("search")),
+        placeholder="Search here...",
+        size="3",
+        max_width="225px",
+        width="100%",
+        variant="surface",
+        on_change=lambda value: State.filter_values(value),
+    )
+
+
+def patient_controls():
+    """Controles principales: botón, checkbox y barra de búsqueda."""
+    return rx.flex(
+        add_patient_button(),
+        rx.spacer(),
+        show_alta_checkbox(),
+        search_bar(),
+        justify="end",
+        align="center",
+        spacing="3",
+        wrap="wrap",
+        width="100%",
+        padding_bottom="1em",
+    )
+
+def table_header():
+    return rx.table.header(
                 rx.table.row(
                     _header_cell("Paciente", "paw-print"),
+                    _header_cell("Especie", "paw-print"),
                     _header_cell("Motivo", "clipboard"),
                     _header_cell("Medico", "user"),
                     _header_cell("Técnico", "user"),
@@ -505,10 +535,19 @@ def main_table():
                     _header_cell("Acciones", "cog"),
                 ),
             ),
+
+
+def main_table(especie="Perro"):
+    """Main table to display patients."""
+    return rx.fragment(
+        patient_controls(),
+        rx.table.root(
+            table_header(),
             rx.table.body(rx.foreach(State.patients, show_patient)),
             variant="surface",
             size="3",
             width="100%",
-            on_mount=State.load_entries,
+            on_mount=State.load_entries(especie),
         ),
     )
+

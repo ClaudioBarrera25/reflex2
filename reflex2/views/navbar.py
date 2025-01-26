@@ -1,11 +1,11 @@
 import reflex as rx
 
 
-def navbar():
+def navbar(especie="Perro"):
     return rx.flex(
         rx.badge(
             rx.icon(tag="table-2", size=28),
-            rx.heading("Hospital App", size="6"),
+            rx.heading(f"Hospital {especie}", size="6"),
             color_scheme="violet",
             radius="large",
             align="center",
@@ -15,6 +15,7 @@ def navbar():
         rx.spacer(),
         rx.hstack(
             # rx.logo(color_scheme="violet"),
+            rx.icon("monitor", on_click=rx.redirect("/")),
             rx.color_mode.button(),
             align="center",
             spacing="3",

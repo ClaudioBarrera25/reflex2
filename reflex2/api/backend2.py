@@ -65,7 +65,9 @@ class State(rx.State):
     sort_reverse: bool = False
     search_value: str = ""
     show_alta: bool = False
+    species_filter: str = ""  # ⚠ Nuevo filtro de especie
     current_register: Registros = Registros()
+
     # Values for current and previous month
     current_month_values: MonthValues = MonthValues()
     previous_month_values: MonthValues = MonthValues()
@@ -73,13 +75,20 @@ class State(rx.State):
 
 
 
-    def load_entries(self) -> list[Registros]:
+    def load_entries(self, hospital: str = None) -> list[Registros]:
         """Obtiene todos los registros de la base de datos."""
         with rx.session() as session:
-            if self.show_alta: # Si se muestra el Alta, entonces seleccionar todo
-                query = select(Registros) # Filtrar pacientes no dados de alta
-            else: # Si no se muestra el Alta, entonces nos quedamos con los que no están de alta
-                query = select(Registros).where(Registros.alta == False)  # Filtrar pacientes no dados de alta
+            self.species_filter = hospital
+            query = select(Registros)
+            print(self.species_filter, hospital)
+            # Filtrar por especie (si species_filter está definido)
+            if self.species_filter:
+                query = query.where(Registros.especie == self.species_filter)
+
+
+            if not self.show_alta: # Si no se muestra el Alta, entonces nos quedamos con los que no están de alta
+                query = query.where(Registros.alta == False)  # Filtrar pacientes no dados de alta
+
 
             if self.search_value:
                 search_value = f"%{self.search_value.lower()}%"
@@ -98,26 +107,26 @@ class State(rx.State):
                 query = query.order_by(order)
 
             self.patients = session.exec(query).all()
-
+            
 
 
     
 
     def sort_values(self, sort_value: str):
         self.sort_value = sort_value
-        self.load_entries()
+        self.load_entries(self.species_filter)
 
     def toggle_sort(self):
         self.sort_reverse = not self.sort_reverse
-        self.load_entries()
+        self.load_entries(self.species_filter)
 
     def check_alta(self):
         self.show_alta = not self.show_alta
-        self.load_entries()
+        self.load_entries(self.species_filter)
 
     def filter_values(self, search_value):
         self.search_value = search_value
-        self.load_entries()
+        self.load_entries(self.species_filter)
 
     def get_register(self, register: Registros):
         self.current_register = register
@@ -129,7 +138,7 @@ class State(rx.State):
             nuevo_registro = Registros(**form_data)
             session.add(nuevo_registro)
             session.commit()
-        self.load_entries()
+        self.load_entries(self.species_filter)
         return rx.toast.info(
             f"Registros de {form_data['nombre']} añadido exitosamente.", position="bottom-right"
         )
@@ -147,7 +156,7 @@ class State(rx.State):
                         setattr(registro, field, value)
                 session.add(registro)
                 session.commit()
-        self.load_entries()
+        self.load_entries(self.species_filter)
         return rx.toast.info(
             f"Registros de {form_data['nombre']} actualizado.", position="bottom-right"
         )
@@ -160,7 +169,7 @@ class State(rx.State):
             if registro:
                 session.delete(registro)
                 session.commit()
-        self.load_entries()
+        self.load_entries(self.species_filter)
         return rx.toast.info(f"Registros de {registro.nombre} eliminado.", position="bottom-right")
 
 
@@ -173,5 +182,6 @@ class State(rx.State):
                 setattr(registro, "alta", True)
                 paciente = getattr(registro, "nombre")
             session.commit()
-        self.load_entries()
+        self.load_entries(self.species_filter)
         return rx.toast.info(f"{paciente} dado de alta.", position="bottom-right")
+
