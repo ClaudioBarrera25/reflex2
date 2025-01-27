@@ -3,17 +3,18 @@ import reflex_chakra as rc
 from reflex_calendar import calendar
 from .components.stats_cards import stats_cards_group
 from .views.navbar import navbar
-from .views.table import main_table
+from .views.table import main_table_gato, main_table_perro
 from reflex2.components.buttons import button_gatos, button_perros
 from .views.bienvenida import land_bienvenida
+from .api.backend2 import State
 
-
+@rx.page(on_load=State.set_species_filter("Perro"))
 def index_perro() -> rx.Component:
     return rx.vstack(
         navbar("Perro"),
         # stats_cards_group(),
         rx.box(
-            main_table("Perro"),
+            main_table_perro(),
             width="100%",
         ),
         width="100%",
@@ -21,12 +22,13 @@ def index_perro() -> rx.Component:
         padding_x=["1.5em", "1.5em", "3em"],
     )
 
+@rx.page(on_load=State.set_species_filter("Gato"))
 def index_gato() -> rx.Component:
     return rx.vstack(
         navbar("Gato"),
         # stats_cards_group(),
         rx.box(
-            main_table("Gato"),
+            main_table_gato(),
             width="100%",
         ),
         width="100%",

@@ -34,6 +34,8 @@ config = rx.Config(
     db_url=DATABASE_URL,
     api_url="http://reflex-production-eb39.up.railway.app:8000"
 )
+if railway_domain in os.environ:
+    print(os.environ[railway_domain])
 
 config = rx.Config(
     app_name="reflex2",
@@ -43,5 +45,5 @@ config = rx.Config(
     db_url=DATABASE_URL,
     # api_url="http://reflex-production-eb39.up.railway.app:8000",
     # use https and the railway public domain with a backend route if available, otherwise default to a local address
-    # api_url=f'https://{os.environ[railway_domain]}/backend' if railway_domain in os.environ else "http://127.0.0.1:8000"
+    api_url=f'https://{os.environ[railway_domain]}/backend' if railway_domain in os.environ else "http://127.0.0.1:8000"
 )

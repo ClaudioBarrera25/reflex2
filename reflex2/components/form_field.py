@@ -58,7 +58,6 @@ def form_field_date(
             type=type,
             default_value=default_value,
             name=name,
-            step="300"
             # style=datetime_style
         ),
         direction="column",

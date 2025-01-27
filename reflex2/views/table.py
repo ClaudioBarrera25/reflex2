@@ -537,17 +537,31 @@ def table_header():
             ),
 
 
-def main_table(especie="Perro"):
+def main_table_perro():
     """Main table to display patients."""
     return rx.fragment(
         patient_controls(),
         rx.table.root(
             table_header(),
-            rx.table.body(rx.foreach(State.patients, show_patient)),
+            rx.table.body(rx.foreach(State.dog_patients, show_patient)),
             variant="surface",
             size="3",
             width="100%",
-            on_mount=State.load_entries(especie),
+            on_mount=State.load_entries(),
+        ),
+    )
+
+def main_table_gato():
+    """Main table to display patients."""
+    return rx.fragment(
+        patient_controls(),
+        rx.table.root(
+            table_header(),
+            rx.table.body(rx.foreach(State.cat_patients, show_patient)),
+            variant="surface",
+            size="3",
+            width="100%",
+            on_mount=State.load_entries(),
         ),
     )
 
